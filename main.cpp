@@ -3,6 +3,6 @@
 #include "Game.cpp"
 int main() {
     Game game;
-    game.startGame();
+    game.start();
     return 0;
 }

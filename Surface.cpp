@@ -72,3 +72,9 @@ void Surface::addText(string st) {
         surface[line][80 + i] = st[i];
     }
 }
+void Surface::addLongText(string st) {
+    line++;
+    for (int i = 0; i < st.size(); i++) {
+        surface[line][10 + i] = st[i];
+    }
+}

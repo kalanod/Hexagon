@@ -17,10 +17,13 @@ private:
     int ruby;
     int perl;
     int x1, x2;
+    int inGame;
 public:
     void startGame();
     void newTurn();
     Game();
+    void endGame();
+    void start();
 };
 
 

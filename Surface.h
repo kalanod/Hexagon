@@ -16,6 +16,8 @@ public:
     void print();
     void addText(string);
     void clr();
+
+    void addLongText(string st);
 };
 
 
