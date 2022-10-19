@@ -1,0 +1,44 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/yaidf/CLionProjects/HEXAGON/Board.cpp
+Board.h
+C:/Users/yaidf/CLionProjects/HEXAGON/Board.h
+
+C:/Users/yaidf/CLionProjects/HEXAGON/Board.h
+vector
+C:/Users/yaidf/CLionProjects/HEXAGON/vector
+
+C:/Users/yaidf/CLionProjects/HEXAGON/Game.cpp
+Game.h
+C:/Users/yaidf/CLionProjects/HEXAGON/Game.h
+Board.cpp
+C:/Users/yaidf/CLionProjects/HEXAGON/Board.cpp
+Surface.cpp
+C:/Users/yaidf/CLionProjects/HEXAGON/Surface.cpp
+
+C:/Users/yaidf/CLionProjects/HEXAGON/Game.h
+Board.h
+C:/Users/yaidf/CLionProjects/HEXAGON/Board.h
+Surface.h
+C:/Users/yaidf/CLionProjects/HEXAGON/Surface.h
+
+C:/Users/yaidf/CLionProjects/HEXAGON/Surface.cpp
+Surface.h
+C:/Users/yaidf/CLionProjects/HEXAGON/Surface.h
+
+C:/Users/yaidf/CLionProjects/HEXAGON/Surface.h
+
+C:/Users/yaidf/CLionProjects/HEXAGON/main.cpp
+iostream
+-
+fstream
+-
+Game.cpp
+C:/Users/yaidf/CLionProjects/HEXAGON/Game.cpp
+
