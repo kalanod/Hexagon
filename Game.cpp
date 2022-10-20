@@ -97,7 +97,7 @@ void Game::newTurn() {
     surface.addText("rubies: " + to_string(ruby));
     surface.addText("perls: " + to_string(perl));
     for (int i = 0; i < board.get().size(); i++){
-        if (board.canMove(60, i, 1)) surface.setCan(i);
+        if (board.canMove(i, (turn % 2) + 1)) surface.setCan(i);
     }
     surface.print();
     int can = 0;

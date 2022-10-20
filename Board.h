@@ -23,6 +23,8 @@ public:
     int getRuby();
 
     Board copy();
+
+    int canMove(int x2, int turn);
 };
 
 
