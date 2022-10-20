@@ -51,14 +51,17 @@ vector<int> Board::get() {
 }
 
 int Board::canMove(int x1, int x2, int turn) {
-    int dif = abs(x2 - x1);
     if (board[x1] != turn || board[x2] != 0) {
         return 0;
     }
-    if (board[x2 - 5] == turn || board[x2 + 5] == turn ||
-        board[x2 - 10] == turn || board[x2 + 10] == turn ||
-        (board[x2 - 6] == turn && (x2 / 5) % 2 == 0) || (board[x2 + 6] == turn && (x2 / 5) % 2 == 1 && x2 % 5 != 0) ||
-        (board[x2 - 4] == turn && (x2 / 5) % 2 == 1 && x2 % 5 != 0) || (board[x2 + 4] == turn && (x2 / 5) % 2 == 0))
+    if (((x2 - 5 >= 0 && x2 - 5 < 85) && board[x2 - 5] == turn) ||
+        ((x2 + 5 >= 0 && x2 - 5 < 85) && board[x2 + 5] == turn) ||
+        ((x2 - 10 >= 0 && x2 - 5 < 85) && board[x2 - 10] == turn) ||
+        ((x2 + 10 >= 0 && x2 - 5 < 85) && board[x2 + 10] == turn) ||
+        ((x2 - 6 >= 0 && x2 - 5 < 85) && board[x2 - 6] == turn && (x2 / 5) % 2 == 0) ||
+        ((x2 + 6 >= 0 && x2 - 5 < 85) && board[x2 + 6] == turn && (x2 / 5) % 2 == 1 && x2 % 5 != 0) ||
+        ((x2 - 4 >= 0 && x2 - 5 < 85) && board[x2 - 4] == turn && (x2 / 5) % 2 == 1 && x2 % 5 != 0) ||
+        ((x2 + 4 >= 0 && x2 - 5 < 85) && board[x2 + 4] == turn && (x2 / 5) % 2 == 0))
         return 1;
 
     if ((x2 / 5) % 2 == 1) {
@@ -68,15 +71,15 @@ int Board::canMove(int x1, int x2, int turn) {
             board[x2 - 15] == turn || board[x2 + 15] == turn ||
             (board[x2 - 9] == turn) || (board[x2 + 9] == turn && x2 % 5 != 0) ||
             board[x2 + 16] == turn || board[x2 - 14] == turn)
-            return 2;
+            return 0;
     } else {
         if (board[x2 - 20] == turn || board[x2 + 20] == turn ||
-            (board[x2 - 11] == turn) || board[x2 + 11] == turn ||
-            (board[x2 - 1] == turn) || board[x2 + 1] == turn ||
+            (board[x2 - 11] == turn) || (board[x2 + 11] == turn && x2 % 5 != 4) ||
+            (board[x2 - 1] == turn) || (board[x2 + 1] == turn && x2 % 5 != 4) ||
             board[x2 - 15] == turn || board[x2 + 15] == turn ||
             (board[x2 - 9] == turn && x2 % 5 != 4) || (board[x2 + 9] == turn) ||
-            board[x2 - 16] == turn || board[x2 + 14] == turn)
-            return 2;
+            (board[x2 - 16] == turn && x2 % 5 != 0 && x2 / 5 != 15) || (board[x2 + 14] == turn && x2 % 5 != 0))
+            return 0;
     }
 
     return 0;

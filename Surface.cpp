@@ -52,7 +52,9 @@ void Surface::loadBoard(vector<int> data) {
         }
     }
 }
-
+void Surface::setCan(int a){
+    surface[a / 5][(a % 5) * 8 + ((a / 5) % 2) * 4 + 2] = '.';
+}
 void Surface::print() {
     for (const string &i: surface) {
         cout << i << endl;

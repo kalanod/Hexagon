@@ -18,6 +18,8 @@ public:
     void clr();
 
     void addLongText(string st);
+
+    void setCan(int a);
 };
 
 

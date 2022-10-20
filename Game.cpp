@@ -22,6 +22,10 @@ void Game::startGame() {
     }
 
 }
+void Game::whereTest(){
+    board.refreshBoard();
+    while (true);
+}
 void  Game::start(){
     int ans = 5;
     while (ans != 1 && ans != 2 && ans != 4 && ans != 3){
@@ -78,9 +82,10 @@ void Game::newTurn() {
         if (mode == 2) {
             surface.addText("Player's 2 turn");
         } else{
-            cout << "----" <<autoTurnFirst(1) << endl;
             surface.clr();
             turn ++;
+            return;
+            cout << "----" <<autoTurnFirst(1) << endl;
             if (ruby + perl >= 58) endGame();
             return;
         }
@@ -91,6 +96,9 @@ void Game::newTurn() {
     perl = board.getPerl();
     surface.addText("rubies: " + to_string(ruby));
     surface.addText("perls: " + to_string(perl));
+    for (int i = 0; i < board.get().size(); i++){
+        if (board.canMove(60, i, 1)) surface.setCan(i);
+    }
     surface.print();
     int can = 0;
     while (!can) {

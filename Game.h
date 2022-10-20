@@ -30,6 +30,8 @@ public:
     int autoTurn(int, int, int, Board);
 
     int autoTurnFirst(int deep);
+
+    void whereTest();
 };
 
 
