@@ -12,18 +12,24 @@
 class Game {
 private:
     Board board;
+    Board board2;
     Surface surface;
     int turn;
     int ruby;
     int perl;
     int x1, x2;
     int inGame;
+    int mode;
 public:
     void startGame();
     void newTurn();
     Game();
     void endGame();
     void start();
+
+    int autoTurn(int, int, int, Board);
+
+    int autoTurnFirst(int deep);
 };
 
 
