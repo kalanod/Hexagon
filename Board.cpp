@@ -49,7 +49,10 @@ void Board::print2() {
 vector<int> Board::get() {
     return board;
 }
-
+int Board::getByTurn(int i){
+    if (i % 2) return getRuby();
+    return getPerl();
+}
 int Board::canMove(int x1, int x2, int turn) {
     turn = (turn % 2) + 1;
     if (board[x1] != turn || board[x2] != 0) {
@@ -69,8 +72,8 @@ int Board::canMove(int x2, int turn) {
         ((x2 - 10 >= 0 && x2 - 10 < 85) && board[x2 - 10] == turn) ||
         ((x2 + 10 >= 0 && x2 + 10 < 85) && board[x2 + 10] == turn) ||
         ((x2 - 6 >= 0 && x2 - 6 < 85) && board[x2 - 6] == turn && (x2 / 5) % 2 == 0 && x2 % 5 != 0) ||
-        ((x2 + 6 >= 0 && x2 + 6 < 85) && board[x2 + 6] == turn && (x2 / 5) % 2 == 1 && x2 % 5 != 0) ||
-        ((x2 - 4 >= 0 && x2 - 4 < 85) && board[x2 - 4] == turn && (x2 / 5) % 2 == 1 && (x2 % 5 != 0 || x2 / 5 < 5)) ||
+        ((x2 + 6 >= 0 && x2 + 6 < 85) && board[x2 + 6] == turn && (x2 / 5) % 2 == 1) ||
+        ((x2 - 4 >= 0 && x2 - 4 < 85) && board[x2 - 4] == turn && (x2 / 5) % 2 == 1 && (x2 % 5 != 0 || x2 / 5 > 5)) ||
         ((x2 + 4 >= 0 && x2 + 4 < 85) && board[x2 + 4] == turn && (x2 / 5) % 2 == 0) && (x2 % 5) != 0)
         return 1;
 

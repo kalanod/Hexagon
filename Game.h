@@ -32,6 +32,8 @@ public:
     int autoTurnFirst(int deep);
 
     void whereTest();
+
+    int countWays(Board board1, int i, int turn, int delta);
 };
 
 

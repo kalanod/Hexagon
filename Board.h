@@ -25,6 +25,8 @@ public:
     Board copy();
 
     int canMove(int x2, int turn);
+
+    int getByTurn(int i);
 };
 
 
