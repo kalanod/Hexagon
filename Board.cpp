@@ -50,7 +50,7 @@ vector<int> Board::get() {
     return board;
 }
 int Board::getByTurn(int i){
-    if (i % 2) return getRuby();
+    if ((i % 2) + 1 == 1) return getRuby();
     return getPerl();
 }
 int Board::canMove(int x1, int x2, int turn) {
@@ -131,6 +131,10 @@ void Board::move(int x2, int turn) {
 }
 
 void Board::jump(int x1, int x2, int turn) {
+    if (x1 == 0){
+        move(x2, turn);
+        return;
+    }
     turn = (turn % 2) + 1;
     board[x1] = 0;
     board[x2] = turn;

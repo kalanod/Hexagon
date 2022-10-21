@@ -8,4 +8,6 @@ CMakeFiles/HEXAGON.dir/main.cpp.obj: \
  ../Game.h \
  ../Surface.cpp \
  ../Surface.h \
+ ../Tester.cpp \
+ ../Tester.h \
  ../main.cpp

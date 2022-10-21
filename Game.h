@@ -11,7 +11,6 @@
 
 class Game {
 private:
-    Board board;
     Board board2;
     Surface surface;
     int turn;
@@ -20,6 +19,7 @@ private:
     int x1, x2;
     int inGame;
     int mode;
+    int jumps[14] = {1, -1, 10, -10, 15, -15, 9, -9, 14, -14, 16, -16, 20, -20};
 public:
     void startGame();
     void newTurn();
@@ -27,13 +27,15 @@ public:
     void endGame();
     void start();
 
-    int autoTurn(int, int, int, Board);
+    int autoTurn(int, int, int, Board&);
 
     int autoTurnFirst(int deep);
 
     void whereTest();
+    void print();
+    int countWays(Board&, int i, int turn, int delta);
 
-    int countWays(Board board1, int i, int turn, int delta);
+    Board board;
 };
 
 

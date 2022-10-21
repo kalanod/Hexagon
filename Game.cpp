@@ -31,7 +31,7 @@ void Game::whereTest() {
 
 void Game::start() {
     int ans = 5;
-    while (ans != 1 && ans != 2 && ans != 4 && ans != 3) {
+    while (ans != 1 && ans != 2) {
         surface.addLongText("Hiii! It's HEXAGON game");
         surface.addLongText("select to continue");
         surface.addLongText("");
@@ -41,9 +41,6 @@ void Game::start() {
         surface.addLongText("4) exit");
         surface.print();
         surface.clr();
-        mode = 1;
-        startGame();
-        return;
         cin >> ans;
         switch (ans) {
             case 1:
@@ -61,12 +58,14 @@ void Game::start() {
                 surface.addLongText("");
                 surface.addLongText("How to play: in surface you can see two figures");
                 surface.addLongText(
-                        "left - you playing field, 0 - it's hex is free, 1 - hex player's 1, 2 - fild player's 2");
-                surface.addLongText("right - field map, in this field you can see the number of each hexagons");
+                        "left-you playing field, 0-it's hex is free, 1-hex player's 1, 2-fild player's 2");
+                surface.addLongText("right-field map, in this field you can see the number of each hexagons");
                 surface.addLongText("use coordinates from field map to chose a hexagon for you turn");
                 surface.addLongText("enter to continue..");
                 surface.print();
                 surface.clr();
+                getchar();
+                getchar();
                 break;
             case 4:
                 surface.addLongText("good bye! hope to see you later");
@@ -89,8 +88,7 @@ void Game::newTurn() {
         } else {
             surface.clr();
             cout << "----" << autoTurnFirst(1) << endl;
-            turn++;
-            if (ruby + perl >= 58) endGame();
+            if (board.getRuby() + board.getPerl() >= 58 || board.getRuby() == 0 || board.getPerl() == 0) endGame();
             return;
         }
     } else {
@@ -126,7 +124,7 @@ void Game::newTurn() {
     }
     surface.clr();
     turn++;
-    if (ruby + perl >= 58) endGame();
+    if (board.getRuby() + board.getPerl() >= 58 || board.getRuby() == 0 || board.getPerl() == 0) endGame();
 }
 
 void Game::endGame() {
@@ -136,266 +134,57 @@ void Game::endGame() {
     inGame = 0;
 }
 
-int Game::countWays(Board tmpBoard, int i, int turn, int step) {
+int Game::countWays(Board &tmpBoard, int i, int turn, int step) {
     int b = 0, r = 0;
     b = tmpBoard.getByTurn(turn);
-    r = tmpBoard.getByTurn(turn + 1);
     tmpBoard.jump(i + step, i, turn);
-    b = tmpBoard.getByTurn(turn) - b + r - tmpBoard.getByTurn(turn + 1);
-    if ((turn % 2) + 1 != (this->turn % 2) + 1) b -= autoTurn(b, 1, (turn + 1) % 2, tmpBoard);
+    b = tmpBoard.getByTurn(turn) - b;
+    if ((turn % 2) + 1 != (this->turn % 2) + 1) b -= autoTurn(0, 1, turn + 1, tmpBoard);
+
     return b;
 }
 
-int Game::autoTurn(int best, int deep, int turn, Board board1) {
+int Game::autoTurn(int best, int deep, int turn, Board &board1) {
+//    surface.loadBoard(board1.get());
+//    surface.print();
     int b = best;
-    int b1 = -1;
+    int b1 = -9;
     Board tmpBoard;
     if (deep <= 0) return best;
     vector<int> tmp = board1.get();
     for (int i = 0; i < tmp.size(); i++) {
         if (board1.canMove(i, turn) == 1) {
             tmpBoard = board1.copy();
-            if (turn == 2) {
-                b = tmpBoard.getPerl();
-            } else {
-                b = tmpBoard.getRuby();
-            }
-            tmpBoard.move(i, turn);
-            if (turn == 2) {
-                b = tmpBoard.getPerl() - b;
-            } else {
-                b = tmpBoard.getRuby() - b;
-            }
-            if ((turn % 2) + 1 != (this->turn % 2) + 1) b -= autoTurn(b, 1, (turn + 1) % 2, tmpBoard);
+            b = countWays(tmpBoard, i, turn, -i);
             b = autoTurn(b + best, deep - 1, turn, tmpBoard);
             if (b > b1) {
                 b1 = b;
             }
+
         }
-        if (board.canMove(i, turn) == 2) {
-            if (board.canMove(i - 15, i, turn)) {
-                b = countWays(board1, i, turn, -15);
-                b = autoTurn(b + best, deep - 1, turn, tmpBoard);
-                if (b > b1) {
-                    b1 = b;
-                }
-            }
-            if (board.canMove(i + 15, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn == 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i + 15, i, turn);
-                if (turn == 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                if ((turn % 2) + 1 != (this->turn % 2) + 1) b -= autoTurn(b, 1, (turn + 1) % 2, tmpBoard);
-                b = autoTurn(b + best, deep - 1, turn, tmpBoard);
-                if (b > b1) {
-                    b1 = b;
-                }
-            }
-            if (board.canMove(i - 9, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn == 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i - 9, i, turn);
-                if (turn == 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                if ((turn % 2) + 1 != (this->turn % 2) + 1) b -= autoTurn(b, 1, (turn + 1) % 2, tmpBoard);
-                b = autoTurn(b + best, deep - 1, turn, tmpBoard);
-                if (b > b1) {
-                    b1 = b;
-                }
-            }
-            if (board.canMove(i + 9, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn == 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i + 9, i, turn);
-                if (turn == 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                if ((turn % 2) + 1 != (this->turn % 2) + 1) b -= autoTurn(b, 1, (turn + 1) % 2, tmpBoard);
-                b = autoTurn(b + best, deep - 1, turn, tmpBoard);
-                if (b > b1) {
-                    b1 = b;
-                }
-            }
-            if (board.canMove(i - 1, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn == 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i - 1, i, turn);
-                if (turn == 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                if ((turn % 2) + 1 != (this->turn % 2) + 1) b -= autoTurn(b, 1, (turn + 1) % 2, tmpBoard);
-                b = autoTurn(b + best, deep - 1, turn, tmpBoard);
-                if (b > b1) {
-                    b1 = b;
-                }
-            }
-            if (board.canMove(i + 1, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn == 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i + 1, i, turn);
-                if (turn == 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                if ((turn % 2) + 1 != (this->turn % 2) + 1) b -= autoTurn(b, 1, (turn + 1) % 2, tmpBoard);
-                b = autoTurn(b + best, deep - 1, turn, tmpBoard);
-                if (b > b1) {
-                    b1 = b;
-                }
-            }
-            if (board.canMove(i - 11, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn == 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i - 11, i, turn);
-                if (turn == 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                if ((turn % 2) + 1 != (this->turn % 2) + 1) b -= autoTurn(b, 1, (turn + 1) % 2, tmpBoard);
-                b = autoTurn(b + best, deep - 1, turn, tmpBoard);
-                if (b > b1) {
-                    b1 = b;
-                }
-            }
-            if (board.canMove(i + 11, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn == 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i + 11, i, turn);
-                if (turn == 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                if ((turn % 2) + 1 != (this->turn % 2) + 1) b -= autoTurn(b, 1, (turn + 1) % 2, tmpBoard);
-                b = autoTurn(b + best, deep - 1, turn, tmpBoard);
-                if (b > b1) {
-                    b1 = b;
-                }
-            }
-            if (board.canMove(i - 14, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn == 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i - 14, i, turn);
-                if (turn == 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                if ((turn % 2) + 1 != (this->turn % 2) + 1) b -= autoTurn(b, 1, (turn + 1) % 2, tmpBoard);
-                b = autoTurn(b + best, deep - 1, turn, tmpBoard);
-                if (b > b1) {
-                    b1 = b;
-                }
-            }
-            if (board.canMove(i + 14, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn == 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i + 14, i, turn);
-                if (turn == 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                if ((turn % 2) + 1 != (this->turn % 2) + 1) b -= autoTurn(b, 1, (turn + 1) % 2, tmpBoard);
-                b = autoTurn(b + best, deep - 1, turn, tmpBoard);
-                if (b > b1) {
-                    b1 = b;
-                }
-            }
-            if (board.canMove(i - 16, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn == 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i - 16, i, turn);
-                if (turn == 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                if ((turn % 2) + 1 != (this->turn % 2) + 1) b -= autoTurn(b, 1, (turn + 1) % 2, tmpBoard);
-                b = autoTurn(b + best, deep - 1, turn, tmpBoard);
-                if (b > b1) {
-                    b1 = b;
-                }
-            }
-            if (board.canMove(i + 16, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn == 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i + 16, i, turn);
-                if (turn % 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                if ((turn % 2) + 1 != (this->turn % 2) + 1) b -= autoTurn(b, 1, (turn + 1) % 2, tmpBoard);
-                b = autoTurn(b + best, deep - 1, turn, tmpBoard);
-                if (b > b1) {
-                    b1 = b;
+        if (board1.canMove(i, turn) == 2) {
+            for (int j: jumps) {
+                if (board1.canMove(i + j, i, turn)) {
+                    tmpBoard = board.copy();
+                    b = countWays(tmpBoard, i, turn, j);
+                    b = autoTurn(b + best, deep - 1, turn, tmpBoard);
+                    if (b > b1) {
+                        b1 = b;
+                    }
                 }
             }
         }
     }
     return best + b1;
 }
-
+void Game::print() {
+    surface.clr();
+    surface.loadBoard(board.get());
+    surface.print();
+    surface.clr();
+}
 int Game::autoTurnFirst(int deep) {
-    int best = -1;
+    int best = -9;
     int pos = 0;
     int pos1 = 0;
     int b = 0;
@@ -405,287 +194,36 @@ int Game::autoTurnFirst(int deep) {
     for (int i = 0; i < tmp.size(); i++) {
         if (board.canMove(i, turn) == 1) {
             tmpBoard = board.copy();
-            if (turn % 2) {
-                b = tmpBoard.getPerl();
-            } else {
-                b = tmpBoard.getRuby();
-            }
-            tmpBoard.move(i, turn);
-            if (turn == 2) {
-                b = tmpBoard.getPerl() - b;
-            } else {
-                b = tmpBoard.getRuby() - b;
-            }
-            b -= autoTurn(0, 1, ((turn + 1) % 2) + 1, tmpBoard);
-            b = autoTurn(b, deep - 1, (turn % 2) + 1, tmpBoard);
+            b = countWays(tmpBoard, i, turn, -i);
+            //cout << "move to " << i << " = " << b << endl ;
+            b = autoTurn(b, deep - 1, turn, tmpBoard);
+            //cout << "move to " << i << " = " << b << endl ;
             if (b > best) {
                 pos = i;
                 pos1 = 0;
                 best = b;
+
             }
         }
 
         if (board.canMove(i, turn) == 2) {
-            if (board.canMove(i - 15, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn % 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i - 15, i, turn);
-                if (turn % 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                b -= autoTurn(0, 1, ((turn + 1) % 2) + 1, tmpBoard);
-                b = autoTurn(b, deep - 1, (turn % 2) + 1, tmpBoard);
-                if (b > best) {
-                    pos = i;
-                    pos1 = i - 15;
-                    best = b;
-                }
-            }
-            if (board.canMove(i + 15, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn % 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i + 15, i, turn);
-                if (turn % 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                b -= autoTurn(0, 1, ((turn + 1) % 2) + 1, tmpBoard);
-                b = autoTurn(b, deep - 1, (turn % 2) + 1, tmpBoard);
-                if (b > best) {
-                    pos = i;
-                    pos1 = i + 15;
-                    best = b;
-                }
-            }
-            if (board.canMove(i - 9, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn % 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i - 9, i, turn);
-                if (turn % 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                b -= autoTurn(0, 1, ((turn + 1) % 2) + 1, tmpBoard);
-                b = autoTurn(b, deep - 1, (turn % 2) + 1, tmpBoard);
-                if (b > best) {
-                    pos = i;
-                    pos1 = i - 9;
-                    best = b;
-                }
-            }
-            if (board.canMove(i + 9, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn % 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i + 9, i, turn);
-                if (turn % 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                b -= autoTurn(0, 1, ((turn + 1) % 2) + 1, tmpBoard);
-                b = autoTurn(b, deep - 1, (turn % 2) + 1, tmpBoard);
-                if (b > best) {
-                    pos = i;
-                    pos1 = i + 9;
-                    best = b;
-                }
-            }
-            if (board.canMove(i - 1, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn % 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i - 1, i, turn);
-                if (turn % 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                b -= autoTurn(0, 1, ((turn + 1) % 2) + 1, tmpBoard);
-                b = autoTurn(b, deep - 1, (turn % 2) + 1, tmpBoard);
-                if (b > best) {
-                    pos = i;
-                    pos1 = i - 1;
-                    best = b;
-                }
-            }
-            if (board.canMove(i + 1, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn % 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i + 1, i, turn);
-                if (turn % 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                b -= autoTurn(0, 1, ((turn + 1) % 2) + 1, tmpBoard);
-                b = autoTurn(b, deep - 1, (turn % 2) + 1, tmpBoard);
-                if (b > best) {
-                    pos = i;
-                    pos1 = i + 1;
-                    best = b;
-                }
-            }
-            if (board.canMove(i - 11, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn % 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i - 11, i, turn);
-                if (turn % 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                b -= autoTurn(0, 1, ((turn + 1) % 2) + 1, tmpBoard);
-                b = autoTurn(b, deep - 1, (turn % 2) + 1, tmpBoard);
-                if (b > best) {
-                    pos = i;
-                    pos1 = i - 11;
-                    best = b;
-                }
-            }
-            if (board.canMove(i + 11, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn % 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i + 11, i, turn);
-                if (turn % 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                b -= autoTurn(0, 1, ((turn + 1) % 2) + 1, tmpBoard);
-                b = autoTurn(b, deep - 1, (turn % 2) + 1, tmpBoard);
-                if (b > best) {
-                    pos = i;
-                    pos1 = i + 11;
-                    best = b;
-                }
-            }
-            if (board.canMove(i - 14, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn % 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i - 14, i, turn);
-                if (turn % 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                b -= autoTurn(0, 1, ((turn + 1) % 2) + 1, tmpBoard);
-                b = autoTurn(b, deep - 1, (turn % 2) + 1, tmpBoard);
-                if (b > best) {
-                    pos = i;
-                    pos1 = i - 14;
-                    best = b;
-                }
-            }
-            if (board.canMove(i + 14, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn % 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i + 14, i, turn);
-                if (turn % 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                b -= autoTurn(0, 1, ((turn + 1) % 2) + 1, tmpBoard);
-                b = autoTurn(b, deep - 1, (turn % 2) + 1, tmpBoard);
-                if (b > best) {
-                    pos = i;
-                    pos1 = i + 14;
-                    best = b;
-                }
-            }
-            if (board.canMove(i - 16, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn % 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i - 16, i, turn);
-                if (turn % 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                b -= autoTurn(0, 1, ((turn + 1) % 2) + 1, tmpBoard);
-                b = autoTurn(b, deep - 1, (turn % 2) + 1, tmpBoard);
-                if (b > best) {
-                    pos = i;
-                    pos1 = i - 16;
-                    best = b;
-                }
-            }
-            if (board.canMove(i + 16, i, turn)) {
-                tmpBoard = board.copy();
-                if (turn % 2) {
-                    b = tmpBoard.getPerl();
-                } else {
-                    b = tmpBoard.getRuby();
-                }
-                tmpBoard.jump(i + 16, i, turn);
-                if (turn % 2) {
-                    b = tmpBoard.getPerl() - b;
-                } else {
-                    b = tmpBoard.getRuby() - b;
-                }
-                b -= autoTurn(0, 1, ((turn + 1) % 2) + 1, tmpBoard);
-                b = autoTurn(b, deep - 1, (turn % 2) + 1, tmpBoard);
-                if (b > best) {
-                    pos = i;
-                    pos1 = i + 16;
-                    best = b;
+            for (int j: jumps) {
+                if (board.canMove(i + j, i, turn)) {
+                    tmpBoard = board.copy();
+                    b = countWays(tmpBoard, i, turn, j);
+                    //cout << "jump from " << i + j << " to " << i << " = " << b << endl;
+                    b = autoTurn(b, deep - 1, turn, tmpBoard);
+                    //cout << "jump from " << i + j << " to " << i << " = " << b << endl;
+                    if (b > best) {
+                        pos = i;
+                        pos1 = i + j;
+                        best = b;
+                    }
                 }
             }
         }
     }
-    cout << "++" << pos1 << "++" << pos << "++" << endl;
-    if (pos1 == 0) {
-        board.move(pos, turn);
-    } else {
-        board.jump(pos1, pos, turn);
-
-    }
+    board.jump(pos1, pos, turn);
+    turn++;
     return pos;
 }
