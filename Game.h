@@ -36,6 +36,8 @@ public:
     int countWays(Board&, int i, int turn, int delta);
 
     Board board;
+
+    void newAutoTurn();
 };
 
 
