@@ -3,7 +3,12 @@
 //
 
 #include "Surface.h"
-
+int boardSize = 18;
+int boardWidth = 5;
+int cellSize = 8;
+int spaceSize = 4;
+int gameSize = 4;
+int intBonus = 48;
 Surface::Surface() {
     surface.resize(18);
     line = 0;
@@ -58,7 +63,9 @@ void Surface::print() {
         cout << i << endl;
     }
 }
-
+void Surface::setCan(int a){
+    surface[a / boardWidth][(a % boardWidth) * cellSize + ((a / boardWidth) % 2) * spaceSize + 2] = '.';
+}
 void Surface::clr() {
     for (int i = 0; i < 18; i++) {
         surface[i] = "                                                                                               ";

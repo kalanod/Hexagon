@@ -10,8 +10,6 @@ using namespace std;
 class Board {
 private:
     vector<int> board;
-
-
 public:
     Board();
     void refreshBoard();
@@ -23,6 +21,12 @@ public:
     void jump(int, int, int);
     int getPerl();
     int getRuby();
+
+    Board copy();
+
+    int canMove(int x2, int turn);
+
+    int getByTurn(int i);
 };
 
 
