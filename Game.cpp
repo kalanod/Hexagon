@@ -5,8 +5,7 @@
 #include "Game.h"
 #include "Board.cpp"
 #include "Surface.cpp"
-
-#define DEEP 1
+#include "Parameters.h"
 
 Game::Game() {
     turn = 0;
@@ -44,7 +43,7 @@ void Game::whereTest() {
 
 void Game::start() {
     int ans = 6;
-    while (ans != 1 && ans != 2 && ans != 3 && ans != 5) {
+    while (ans != Parameters::onePlayerMode && ans != Parameters::twoPlayerMode && ans != Parameters::zeroPlayerMode && ans != 5) {
         surface.addLongText("Hiii! It's HEXAGON game");
         surface.addLongText("select to continue");
         surface.addLongText("");
@@ -57,19 +56,19 @@ void Game::start() {
         surface.clr();
         cin >> ans;
         switch (ans) {
-            case 1:
-                mode = 1;
+            case Parameters::onePlayerMode: // one player mode
+                mode = Parameters::onePlayerMode;
                 startGame();
                 break;
-            case 2:
-                mode = 2;
+            case Parameters::twoPlayerMode: // two player mode
+                mode = Parameters::twoPlayerMode;
                 startGame();
                 break;
-            case 3:
-                mode = 3;
+            case Parameters::zeroPlayerMode: // zero player mode
+                mode = Parameters::zeroPlayerMode;
                 startGame();
                 break;
-            case 4:
+            case 4: // about game
                 surface.addLongText("HEXAGON game v1.1");
                 surface.addLongText("made by Andrey Trofimov");
                 surface.addLongText("for SUAI 2022");
@@ -85,7 +84,7 @@ void Game::start() {
                 getchar();
                 getchar();
                 break;
-            case 5:
+            case 5: // exit
                 surface.addLongText("good bye! hope to see you later");
                 surface.print();
                 surface.clr();
@@ -94,18 +93,8 @@ void Game::start() {
     }
 }
 
-void Game::newAutoTurn() {
-    surface.clr();
-    surface.loadBoard(board.get());
-    surface.addText("p1 - rubies");
-    surface.addText("p2 - perls");
-    surface.addText("");
-    surface.addText("");
-    cout << "----" << autoTurnFirst(DEEP) << endl;
-}
-
 void Game::newTurn() {
-    if (board.getRuby() + board.getPerl() >= 58 || board.getRuby() == 0 || board.getPerl() == 0){
+    if (board.getRuby() + board.getPerl() >= Parameters::maxPoints || board.getRuby() == 0 || board.getPerl() == 0){
         endGame();
         return;
     }
@@ -115,11 +104,11 @@ void Game::newTurn() {
     surface.addText("");
     surface.addText("");
     if (turn % 2) {
-        if (mode == 2) {
+        if (mode == Parameters::twoPlayerMode) {
             surface.addText("Player's 1 turn");
         } else {
             surface.addText("Player's 1 turn");
-            cout << "----" << autoTurnFirst(DEEP+7) << endl;
+            cout << "----" << autoTurnFirst(Parameters::deep1) << endl;
             surface.loadBoard(board.get());
             ruby = board.getRuby();
             perl = board.getPerl();
@@ -132,9 +121,9 @@ void Game::newTurn() {
             return;
         }
     } else {
-        if (mode == 3) {
+        if (mode == Parameters::zeroPlayerMode) {
             surface.addText("Player's 2 turn");
-            cout << "----" << autoTurnFirst(DEEP+3) << endl;
+            cout << "----" << autoTurnFirst(Parameters::deep2) << endl;
             surface.loadBoard(board.get());
             ruby = board.getRuby();
             perl = board.getPerl();
@@ -158,11 +147,11 @@ void Game::newTurn() {
             break;
         }
         can = board.canMove(x1, x2, turn);
-        if (can == 1) {
+        if (can == Parameters::canMoveCode) {
             board.move(x2, turn);
             break;
         }
-        if (can == 2) {
+        if (can == Parameters::canJumpCode) {
             board.jump(x1, x2, turn);
             break;
         }
@@ -213,7 +202,7 @@ int Game::autoTurn(int best, int deep, int turn, Board &board1) {
     if (deep <= 0) return best;
     vector<int> tmp = board1.get();
     for (int i = 0; i < tmp.size(); i++) {
-        if (board1.canMove(i, turn) == 1) {
+        if (board1.canMove(i, turn) == Parameters::canMoveCode) {
             tmpBoard = board1.copy();
             b = countWays(tmpBoard, i, turn, -i);
             if (b >= b1) {
@@ -223,7 +212,7 @@ int Game::autoTurn(int best, int deep, int turn, Board &board1) {
                 }
             }
         }
-        if (board1.canMove(i, turn) == 2) {
+        if (board1.canMove(i, turn) == Parameters::canJumpCode) {
             for (int j: jumps) {
                 if (board1.canMove(i + j, i, turn)) {
                     tmpBoard = board.copy();
@@ -257,7 +246,7 @@ int Game::autoTurnFirst(int deep) {
     Board tmpBoard;
     vector<int> tmp = board.get();
     for (int i = 0; i < tmp.size(); i++) {
-        if (board.canMove(i, turn) == 1) {
+        if (board.canMove(i, turn) == Parameters::canMoveCode) {
             tmpBoard = board.copy();
             b = countWays(tmpBoard, i, turn, -i);
             b = autoTurn(b, deep - 1, turn, tmpBoard);
@@ -269,7 +258,7 @@ int Game::autoTurnFirst(int deep) {
             }
         }
 
-        if (board.canMove(i, turn) == 2) {
+        if (board.canMove(i, turn) == Parameters::canJumpCode) {
             for (int j: jumps) {
                 if (board.canMove(i + j, i, turn)) {
                     tmpBoard = board.copy();
