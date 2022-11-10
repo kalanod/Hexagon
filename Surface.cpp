@@ -1,57 +1,52 @@
 //
-// Created by yaidf on 19.10.2022.
+// Created by yaidf on 19.Parameters::maxLine.2022.
 //
 
 #include "Surface.h"
-int boardSize = 18;
-int boardWidth = 5;
-int cellSize = 8;
-int spaceSize = 4;
-int gameSize = 4;
-int intBonus = 48;
+#include "Parameters.h"
 Surface::Surface() {
-    surface.resize(18);
+    surface.resize(Parameters::boardSize);
     line = 0;
-    for (int i = 0; i < 18; i++) {
+    for (int i = 0; i < Parameters::boardSize; i++) {
         surface[i] = "                                                                                               ";
     }
 }
 
 void Surface::loadBoard(vector<int> data) {
-    for (int i = 0; i < 17; i++) {
-        for (int j = 0; j < 5; j++) {
-            if (data[i * 5 + j] != 4) {
-                surface[i][j * 8 + (i % 2) * 4] = '/';
-                surface[i][j * 8 + (i % 2) * 4 + 4] = '\\';
-                surface[i + 1][j * 8 + (i % 2) * 4] = '\\';
-                if (data[i * 5 + j] != 9) surface[i][j * 8 + (i % 2) * 4 + 2] = data[i * 5 + j] + 48;
-                surface[i + 1][j * 8 + (i % 2) * 4 + 1] = '_';
-                surface[i + 1][j * 8 + (i % 2) * 4 + 2] = '_';
-                surface[i + 1][j * 8 + (i % 2) * 4 + 3] = '_';
-                surface[i + 1][j * 8 + (i % 2) * 4 + 4] = '/';
+    for (int i = 0; i < Parameters::boardSize - 1; i++) {
+        for (int j = 0; j < Parameters::boardWidth; j++) {
+            if (data[i * Parameters::boardWidth + j] != Parameters::spaceSize) {
+                surface[i][j * Parameters::cellSize + (i % 2) * Parameters::spaceSize] = '/';
+                surface[i][j * Parameters::cellSize + (i % 2) * Parameters::spaceSize + Parameters::spaceSize] = '\\';
+                surface[i + 1][j * Parameters::cellSize + (i % 2) * Parameters::spaceSize] = '\\';
+                if (data[i * Parameters::boardWidth + j] != 9) surface[i][j * Parameters::cellSize + (i % 2) * Parameters::spaceSize + 2] = data[i * Parameters::boardWidth + j] + Parameters::intBonus;
+                surface[i + 1][j * Parameters::cellSize + (i % 2) * Parameters::spaceSize + 1] = '_';
+                surface[i + 1][j * Parameters::cellSize + (i % 2) * Parameters::spaceSize + 2] = '_';
+                surface[i + 1][j * Parameters::cellSize + (i % 2) * Parameters::spaceSize + 3] = '_';
+                surface[i + 1][j * Parameters::cellSize + (i % 2) * Parameters::spaceSize + Parameters::spaceSize] = '/';
             }
         }
     }
     int counter = 0;
-    for (int i = 0; i < 17; i++) {
-        for (int j = 0; j < 5; j++) {
-            if (data[i * 5 + j] != 4) {
-                surface[i][40 + j * 8 + (i % 2) * 4] = '/';
-                surface[i][40 + j * 8 + (i % 2) * 4 + 4] = '\\';
-                surface[i + 1][40 + j * 8 + (i % 2) * 4] = '\\';
-                if (data[i * 5 + j] != 9) {
-                    if (counter < 10) {
-                        surface[i][40 + j * 8 + (i % 2) * 4 + 2] = (char) (counter % 10 + 48);
+    for (int i = 0; i < Parameters::boardSize - 1; i++) {
+        for (int j = 0; j < Parameters::boardWidth; j++) {
+            if (data[i * Parameters::boardWidth + j] != Parameters::spaceSize) {
+                surface[i][Parameters::firstSpace + j * Parameters::cellSize + (i % 2) * Parameters::spaceSize] = '/';
+                surface[i][Parameters::firstSpace + j * Parameters::cellSize + (i % 2) * Parameters::spaceSize + Parameters::spaceSize] = '\\';
+                surface[i + 1][Parameters::firstSpace + j * Parameters::cellSize + (i % 2) * Parameters::spaceSize] = '\\';
+                if (data[i * Parameters::boardWidth + j] != 9) {
+                    if (counter < Parameters::maxLine) {
+                        surface[i][Parameters::firstSpace + j * Parameters::cellSize + (i % 2) * Parameters::spaceSize + 2] = (char) (counter % Parameters::maxLine + Parameters::intBonus);
                     } else {
-                        surface[i][40 + j * 8 + (i % 2) * 4 + 2] = (char) (counter / 10 + 48);
-                        surface[i][40 + j * 8 + (i % 2) * 4 + 3] = (char) ((counter % 10) + 48);
+                        surface[i][Parameters::firstSpace + j * Parameters::cellSize + (i % 2) * Parameters::spaceSize + 2] = (char) (counter / Parameters::maxLine + Parameters::intBonus);
+                        surface[i][Parameters::firstSpace + j * Parameters::cellSize + (i % 2) * Parameters::spaceSize + 3] = (char) ((counter % Parameters::maxLine) + Parameters::intBonus);
 
                     }
                 }
-                surface[i + 1][40 + j * 8 + (i % 2) * 4 + 1] = '_';
-                surface[i + 1][40 + j * 8 + (i % 2) * 4 + 2] = '_';
-                surface[i + 1][40 + j * 8 + (i % 2) * 4 + 3] = '_';
-                surface[i + 1][40 + j * 8 + (i % 2) * 4 + 4] = '/';
+                surface[i + 1][Parameters::firstSpace + j * Parameters::cellSize + (i % 2) * Parameters::spaceSize + 1] = '_';
+                surface[i + 1][Parameters::firstSpace + j * Parameters::cellSize + (i % 2) * Parameters::spaceSize + 2] = '_';
+                surface[i + 1][Parameters::firstSpace + j * Parameters::cellSize + (i % 2) * Parameters::spaceSize + 3] = '_';
+                surface[i + 1][Parameters::firstSpace + j * Parameters::cellSize + (i % 2) * Parameters::spaceSize + Parameters::spaceSize] = '/';
             }
             counter++;
         }
@@ -64,10 +59,10 @@ void Surface::print() {
     }
 }
 void Surface::setCan(int a){
-    surface[a / boardWidth][(a % boardWidth) * cellSize + ((a / boardWidth) % 2) * spaceSize + 2] = '.';
+    surface[a / Parameters::boardWidth][(a % Parameters::boardWidth) * Parameters::cellSize + ((a / Parameters::boardWidth) % 2) * Parameters::spaceSize + 2] = '.';
 }
 void Surface::clr() {
-    for (int i = 0; i < 18; i++) {
+    for (int i = 0; i < Parameters::boardSize; i++) {
         surface[i] = "                                                                                               ";
     }
     line = 0;
@@ -76,12 +71,12 @@ void Surface::clr() {
 void Surface::addText(string st) {
     line++;
     for (int i = 0; i < st.size(); i++) {
-        surface[line][80 + i] = st[i];
+        surface[line][Parameters::firstSpace * 2 + i] = st[i];
     }
 }
 void Surface::addLongText(string st) {
     line++;
     for (int i = 0; i < st.size(); i++) {
-        surface[line][10 + i] = st[i];
+        surface[line][Parameters::maxLine + i] = st[i];
     }
 }
