@@ -6,7 +6,7 @@
 #include "Board.cpp"
 #include "Surface.cpp"
 
-#define DEEP 2
+#define DEEP 1
 
 Game::Game() {
     turn = 0;
@@ -101,7 +101,7 @@ void Game::newAutoTurn() {
     surface.addText("p2 - perls");
     surface.addText("");
     surface.addText("");
-    cout << "----" << autoTurnFirst(DEEP + 2) << endl;
+    cout << "----" << autoTurnFirst(DEEP) << endl;
 }
 
 void Game::newTurn() {
@@ -119,7 +119,7 @@ void Game::newTurn() {
             surface.addText("Player's 1 turn");
         } else {
             surface.addText("Player's 1 turn");
-            cout << "----" << autoTurnFirst(DEEP) << endl;
+            cout << "----" << autoTurnFirst(DEEP+7) << endl;
             surface.loadBoard(board.get());
             ruby = board.getRuby();
             perl = board.getPerl();
@@ -134,7 +134,7 @@ void Game::newTurn() {
     } else {
         if (mode == 3) {
             surface.addText("Player's 2 turn");
-            cout << "----" << autoTurnFirst(DEEP) << endl;
+            cout << "----" << autoTurnFirst(DEEP+3) << endl;
             surface.loadBoard(board.get());
             ruby = board.getRuby();
             perl = board.getPerl();
